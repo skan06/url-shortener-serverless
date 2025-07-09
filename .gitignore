@@ -1,0 +1,21 @@
+# Ignore terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore Terraform directories
+.terraform/
+
+# Ignore local secrets
+*.zip
+*.pem
+*.key
+*.pub
+my-key
+my-key.pub
+
+# VSCode & OS stuff
+.vscode/
+.DS_Store
+
+# Python cache
+__pycache__/

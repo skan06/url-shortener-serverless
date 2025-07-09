@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Simple URL Shortener</h1>
+    <form id="shorten-form">
+      <input type="text" id="long-url" placeholder="Enter URL" required />
+      <button type="submit">Shorten</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+      const form = document.getElementById("shorten-form");
+      const apiEndpoint = "https://cb21fo4yk8.execute-api.us-east-1.amazonaws.com";
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const url = document.getElementById("long-url").value;
+
+        const res = await fetch(apiEndpoint + "/shorten", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url: url }),
+        });
+
+        const data = await res.json();
+        document.getElementById("result").innerHTML =
+          `<p>Short URL: <a href="${apiEndpoint}/${data.code}" target="_blank">${apiEndpoint}/${data.code}</a></p>`;
+      });
+    </script>
+  </body>
+</html>
