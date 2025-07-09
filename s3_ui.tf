@@ -1,3 +1,5 @@
+#s3-ui.tf
+
 # Create S3 bucket for hosting frontend static website
 resource "aws_s3_bucket" "frontend_ui" {
   bucket = "url-shortener-frontend-skander"

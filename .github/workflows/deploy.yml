@@ -29,5 +29,8 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Zip Lambda function
+        run: zip lambda_function.zip lambda_function.py
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
