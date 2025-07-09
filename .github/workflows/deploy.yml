@@ -3,6 +3,7 @@ name: Terraform Deploy
 on:
   push:
     branches: ["main"]
+
 jobs:
   deploy:
     name: Deploy Terraform Infrastructure
@@ -30,6 +31,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Delete IAM Role if it exists (lab only)
+        run: |
+          aws iam delete-role --role-name lambda-exec-role || echo "Role does not exist or already deleted"
+        continue-on-error: true
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
-

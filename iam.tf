@@ -6,23 +6,30 @@ resource "aws_iam_role" "lambda_exec_role" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [{
-      Action = "sts:AssumeRole",
-      Effect = "Allow",
-      Principal = {
-        Service = "lambda.amazonaws.com"
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
       }
-    }]
+    ]
   })
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [name] # Optionnel : ignorer les conflits sur le nom
+  }
 }
 
-# Attach managed policy to allow Lambda to write logs to CloudWatch
+# Attach AWS managed policy for CloudWatch Logs
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# Custom inline policy to allow Lambda access to DynamoDB table
+# Inline policy to allow access to DynamoDB
 resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
   name = "lambda-dynamodb-policy"
   role = aws_iam_role.lambda_exec_role.id
@@ -44,7 +51,7 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
   })
 }
 
-# Output the Lambda role ARN
+# Output role ARN
 output "lambda_exec_role_arn" {
   value = aws_iam_role.lambda_exec_role.arn
 }
