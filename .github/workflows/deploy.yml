@@ -24,11 +24,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Terraform Init
-        run: terraform init
-
       - name: Zip Lambda function
         run: zip lambda_function.zip lambda_function.py
+
+      - name: Terraform Init
+        run: terraform init
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
