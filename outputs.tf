@@ -6,6 +6,7 @@ output "api_endpoint" {
 }
 
 output "s3_website_url" {
-  #description = "Frontend website URL"
-  value       = aws_s3_bucket.frontend_ui.website_endpoint
+  description = "Frontend website URL"
+  #value       = aws_s3_bucket.frontend_ui.website_endpoint
+  value = aws_s3_bucket_website_configuration.frontend_config.website_endpoint
 }
