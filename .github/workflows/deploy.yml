@@ -3,9 +3,9 @@ name: Terraform Deploy
 on:
   push:
     branches: ["main"]
-
 jobs:
   deploy:
+    name: Deploy Terraform Infrastructure
     runs-on: ubuntu-latest
 
     steps:
@@ -25,10 +25,11 @@ jobs:
           aws-region: us-east-1
 
       - name: Zip Lambda function
-        run: Compress-Archive -Path lambda_function.py -DestinationPath lambda_function.zip
+        run: zip lambda_function.zip lambda_function.py
 
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
