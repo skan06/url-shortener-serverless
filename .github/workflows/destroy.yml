@@ -1,10 +1,12 @@
-name: Terraform Destroy
+name: Terraform Deploy
 
 on:
-  workflow_dispatch:
+  push:
+    branches: ["main"]
 
 jobs:
-  destroy:
+  deploy:
+    name: Deploy Terraform Infrastructure
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +25,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      
+      - name: Cleanup IAM Role if it exists (lab only)
+        run: |
+          echo "Detaching inline policies if exist..."
+          POLICY_NAME=$(aws iam list-role-policies --role-name lambda-exec-role --query 'PolicyNames[0]' --output text 2>/dev/null || echo "")
+          if [ "$POLICY_NAME" != "None" ] && [ "$POLICY_NAME" != "" ]; then
+            aws iam delete-role-policy --role-name lambda-exec-role --policy-name "$POLICY_NAME"
+          fi
+
+          echo "Detaching managed policies if exist..."
+          aws iam detach-role-policy --role-name lambda-exec-role --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole || true
+
+          echo "Deleting role if exists..."
+          aws iam delete-role --role-name lambda-exec-role || echo "Role doesn't exist or already deleted"
+        continue-on-error: true
+
+      
       - name: Zip Lambda function
         run: zip lambda_function.zip lambda_function.py
 
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
