@@ -55,3 +55,4 @@ resource "aws_s3_object" "frontend_css" {
   source = "frontend/style.css" # Local path to your style.css file
   content_type = "text/css"
 }
+

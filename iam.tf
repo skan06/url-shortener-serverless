@@ -48,3 +48,4 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
 output "lambda_exec_role_arn" {
   value = aws_iam_role.lambda_exec_role.arn
 }
+
