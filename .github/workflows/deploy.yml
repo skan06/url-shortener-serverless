@@ -31,8 +31,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Delete IAM Role if it exists (lab only)
+      - name: Delete IAM Role if it exists
         run: |
+          # Detach attached policies before deleting
+          aws iam detach-role-policy --role-name lambda-exec-role --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole || true
           aws iam delete-role --role-name lambda-exec-role || echo "Role does not exist or already deleted"
         continue-on-error: true
 
